@@ -177,6 +177,20 @@ var Panel = {
             });
 
             break;
+        case 'spimbot_header':
+            allowDiagonal = typeof $('#spimbot_section ' +
+                                     '.allow_diagonal:checked').val() !== 'undefined';
+            biDirectional = typeof $('#spimbot_section ' +
+                                     '.bi-directional:checked').val() !== 'undefined';
+            dontCrossCorners = typeof $('#spimbot_section ' +
+                                     '.dont_cross_corners:checked').val() !=='undefined';
+            heuristic = $('input[name=spimbot_heuristic]:checked').val();
+            finder = new PF.SpimBotFinder({
+              allowDiagonal: allowDiagonal,
+              dontCrossCorners: dontCrossCorners,
+              heuristic: PF.Heuristic[heuristic]
+            });
+            break;
         }
 
         return finder;
