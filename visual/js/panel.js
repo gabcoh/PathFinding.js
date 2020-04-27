@@ -184,10 +184,13 @@ var Panel = {
                                      '.bi-directional:checked').val() !== 'undefined';
             dontCrossCorners = typeof $('#spimbot_section ' +
                                      '.dont_cross_corners:checked').val() !=='undefined';
+            reduce_open_list = typeof $('#spimbot_section ' +
+                                     '.reduce_open_list:checked').val() !=='undefined';
             heuristic = $('input[name=spimbot_heuristic]:checked').val();
             finder = new PF.SpimBotFinder({
               allowDiagonal: allowDiagonal,
               dontCrossCorners: dontCrossCorners,
+              reduceOpenList: reduce_open_list,
               heuristic: PF.Heuristic[heuristic]
             });
             break;

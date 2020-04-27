@@ -10,6 +10,7 @@ function SpimBotFinder(opt) {
     this.heuristic = opt.heuristic || Heuristic.manhattan;
     this.weight = opt.weight || 1;
     this.diagonalMovement = opt.diagonalMovement;
+    this.reduceOpenList = opt.reduceOpenList
 
     if (!this.diagonalMovement) {
         if (!this.allowDiagonal) {
@@ -69,7 +70,6 @@ SpimBotFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
     }
   }
 
-  // Don't worry about list being empty. That should never happen
   // list_ind should be pointer to pointer so that we can insert into head of lsit
   function push(list_ind, ind) {
     if (list_ind == -1) {
@@ -110,7 +110,6 @@ SpimBotFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
     openList = nodes[openList].open_list_next;
     var top = nodes[topi];
     var tx = top.x, ty = top.y;
-    top.closed=true;
     top.real.closed = true;
 
     // in mips make sure each neighbor is not a wall and not out of bounds then consider it
@@ -123,14 +122,22 @@ SpimBotFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
         n.parent = topi;
         n.size = top.size + 1;
         return backtrace(ind);
-      } else if (!(n.opened || n.closed)) {
+      } else if (!n.opened) {
         n.heuristic = heuristic(abs(n.x - endX), abs(n.y - endY));
         n.parent = topi;
         n.size = top.size + 1;
-
-        openList = push(openList, ind);
         n.opened = true;
         n.real.opened = true;
+
+        if (n.heuristic < top.heuristic && this.reduceOpenList) {
+          n.open_list_next = topi;
+          top.open_list_next = openList;
+          openList = ind;
+          break;
+        } else {
+          openList = push(openList, ind);
+        }
+
       }
     }
   }
